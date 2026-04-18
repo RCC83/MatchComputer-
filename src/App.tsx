@@ -28,26 +28,56 @@ import { motion, AnimatePresence } from 'motion/react';
 type Page = 'home' | 'live';
 
 export default function App() {
-  const [currentPage, setCurrentPage] = useState<Page>('home');
-  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
-  const [homeTeamName, setHomeTeamName] = useState('');
-  const [awayTeamName, setAwayTeamName] = useState('');
-  const [homeScore, setHomeScore] = useState(0);
-  const [awayScore, setAwayScore] = useState(0);
-  const [seconds, setSeconds] = useState(0);
+  const [currentPage, setCurrentPage] = useState<Page>(() => {
+    const saved = localStorage.getItem('match_currentPage');
+    return (saved as Page) || 'home';
+  });
+  
+  const [theme, setTheme] = useState<'dark' | 'light'>(() => {
+    const saved = localStorage.getItem('match_theme');
+    return (saved as 'dark' | 'light') || 'dark';
+  });
+
+  const [homeTeamName, setHomeTeamName] = useState(() => localStorage.getItem('match_homeTeamName') || '');
+  const [awayTeamName, setAwayTeamName] = useState(() => localStorage.getItem('match_awayTeamName') || '');
+  const [homeScore, setHomeScore] = useState(() => Number(localStorage.getItem('match_homeScore')) || 0);
+  const [awayScore, setAwayScore] = useState(() => Number(localStorage.getItem('match_awayScore')) || 0);
+  const [seconds, setSeconds] = useState(() => Number(localStorage.getItem('match_seconds')) || 0);
   const [isActive, setIsActive] = useState(false);
-  const [matchFormat, setMatchFormat] = useState<'kids' | 'adults' | 'custom'>('adults');
-  const [customPeriodCount, setCustomPeriodCount] = useState(2);
-  const [customPeriodDuration, setCustomPeriodDuration] = useState(45);
-  const [isMatchFinished, setIsMatchFinished] = useState(false);
+  const [matchFormat, setMatchFormat] = useState<'kids' | 'adults' | 'custom'>(() => {
+    const saved = localStorage.getItem('match_format');
+    return (saved as 'kids' | 'adults' | 'custom') || 'adults';
+  });
+  
+  const [customPeriodCount, setCustomPeriodCount] = useState(() => Number(localStorage.getItem('match_customPeriodCount')) || 2);
+  const [customPeriodDuration, setCustomPeriodDuration] = useState(() => Number(localStorage.getItem('match_customPeriodDuration')) || 45);
+  const [isMatchFinished, setIsMatchFinished] = useState(() => localStorage.getItem('match_isFinished') === 'true');
+
+  // Persistence Effects
+  useEffect(() => {
+    localStorage.setItem('match_currentPage', currentPage);
+  }, [currentPage]);
 
   useEffect(() => {
+    localStorage.setItem('match_theme', theme);
     if (theme === 'light') {
       document.documentElement.classList.add('light');
     } else {
       document.documentElement.classList.remove('light');
     }
   }, [theme]);
+
+  useEffect(() => {
+    localStorage.setItem('match_homeTeamName', homeTeamName);
+    localStorage.setItem('match_awayTeamName', awayTeamName);
+    localStorage.setItem('match_homeScore', homeScore.toString());
+    localStorage.setItem('match_awayScore', awayScore.toString());
+    localStorage.setItem('match_seconds', seconds.toString());
+    localStorage.setItem('match_format', matchFormat);
+    localStorage.setItem('match_customPeriodCount', customPeriodCount.toString());
+    localStorage.setItem('match_customPeriodDuration', customPeriodDuration.toString());
+    localStorage.setItem('match_isFinished', isMatchFinished.toString());
+  }, [homeTeamName, awayTeamName, homeScore, awayScore, seconds, matchFormat, customPeriodCount, customPeriodDuration, isMatchFinished]);
 
   // Robust timer using Date.now() for accuracy
   useEffect(() => {
@@ -116,11 +146,11 @@ export default function App() {
             <div className="w-10 h-10 bg-gradient-to-br from-primary to-primary-dark rounded-xl flex items-center justify-center shadow-[0_4px_15px_rgba(0,227,253,0.3)] border border-white/10">
               <Trophy className="w-6 h-6 text-on-primary" />
             </div>
-            <div className="flex flex-col -space-y-1">
-              <span className="text-text font-headline font-black italic tracking-tighter text-[14px] leading-none">
+            <div className="flex items-baseline gap-1">
+              <span className="text-text font-headline font-black italic tracking-tighter text-[16px] leading-none">
                 MATCH
               </span>
-              <span className="text-primary font-headline font-black italic tracking-tighter text-[14px] leading-none">
+              <span className="text-primary font-headline font-black italic tracking-tighter text-[16px] leading-none">
                 COMPTEUR
               </span>
             </div>
