@@ -138,23 +138,34 @@ export default function App() {
       {/* Header */}
       <header className="fixed top-0 w-full max-w-md z-50 bg-surface/80 backdrop-blur-xl border-b border-white/5 pt-[env(safe-area-inset-top)]">
         <div className="relative flex items-center justify-between px-4 h-14">
-          {/* Logo Section (Left) */}
-          <motion.div 
-            whileHover={{ scale: 1.05 }}
-            className="flex items-center gap-3 z-10 cursor-pointer"
-          >
-            <div className="w-10 h-10 bg-gradient-to-br from-primary to-primary-dark rounded-xl flex items-center justify-center shadow-[0_4px_15px_rgba(0,227,253,0.3)] border border-white/10">
-              <Trophy className="w-6 h-6 text-on-primary" />
-            </div>
-            <div className="flex items-baseline gap-1">
-              <span className="text-text font-headline font-black italic tracking-tighter text-[16px] leading-none">
-                MATCH
-              </span>
-              <span className="text-primary font-headline font-black italic tracking-tighter text-[16px] leading-none">
-                COMPTEUR
-              </span>
-            </div>
-          </motion.div>
+          {/* Logo/Back Section (Left) */}
+          <div className="flex items-center gap-2">
+            {currentPage === 'live' && (
+              <button 
+                onClick={() => setCurrentPage('home')}
+                className="p-2 -ml-2 text-text-muted hover:text-primary transition-all active:scale-95"
+              >
+                <ChevronLeft className="w-6 h-6" />
+              </button>
+            )}
+            <motion.div 
+              whileHover={{ scale: 1.05 }}
+              onClick={() => setCurrentPage('home')}
+              className="flex items-center gap-3 z-10 cursor-pointer"
+            >
+              <div className="w-9 h-9 bg-gradient-to-br from-primary to-primary-dark rounded-xl flex items-center justify-center shadow-[0_4px_15px_rgba(0,227,253,0.3)] border border-white/10">
+                <Trophy className="w-5 h-5 text-on-primary" />
+              </div>
+              <div className="flex items-baseline gap-1">
+                <span className="text-text font-headline font-black italic tracking-tighter text-[16px] leading-none">
+                  MATCH
+                </span>
+                <span className="text-primary font-headline font-black italic tracking-tighter text-[16px] leading-none">
+                  COMPTEUR
+                </span>
+              </div>
+            </motion.div>
+          </div>
 
           {/* Actions Section (Right) */}
           <div className="flex items-center z-10">
@@ -214,21 +225,21 @@ export default function App() {
       </main>
 
       {/* Bottom Nav */}
-      <nav className="fixed bottom-0 w-full max-w-md z-50 bg-surface/90 backdrop-blur-2xl border-t border-white/5 rounded-t-3xl shadow-2xl">
-        <div className="flex justify-around items-center h-16 px-6 w-full">
+      <nav className="fixed bottom-0 w-full max-w-md z-50 bg-surface/90 backdrop-blur-2xl border-t border-white/5 rounded-t-3xl shadow-2xl pb-[env(safe-area-inset-bottom)]">
+        <div className="flex justify-around items-center h-20 px-6 w-full">
           <button 
             onClick={() => setCurrentPage('home')}
-            className={`flex flex-col items-center gap-1 transition-all ${currentPage === 'home' ? 'text-primary bg-primary/10 px-6 py-2 rounded-2xl' : 'text-text-muted hover:text-primary'}`}
+            className={`flex flex-col items-center gap-1 transition-all ${currentPage === 'home' ? 'text-primary bg-primary/10 px-6 py-2.5 rounded-2xl' : 'text-text-muted hover:text-primary'}`}
           >
             <Home className="w-6 h-6" />
             <span className="font-headline font-bold text-[9px] uppercase tracking-widest">Accueil</span>
           </button>
           <button 
             onClick={() => setCurrentPage('live')}
-            className={`flex flex-col items-center gap-1 transition-all ${currentPage === 'live' ? 'text-primary bg-primary/10 px-6 py-2 rounded-2xl' : 'text-text-muted hover:text-primary'}`}
+            className={`flex flex-col items-center gap-1 transition-all ${currentPage === 'live' ? 'text-primary bg-primary/10 px-6 py-2.5 rounded-2xl' : 'text-text-muted hover:text-primary'}`}
           >
             <Timer className="w-6 h-6" />
-            <span className="font-headline font-bold text-[9px] uppercase tracking-widest">Live Score</span>
+            <span className="font-headline font-bold text-[9px] uppercase tracking-widest text-center">Live Score</span>
           </button>
         </div>
       </nav>
