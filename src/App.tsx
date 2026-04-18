@@ -36,7 +36,7 @@ export default function App() {
   const [awayScore, setAwayScore] = useState(0);
   const [seconds, setSeconds] = useState(0);
   const [isActive, setIsActive] = useState(false);
-  const [matchFormat, setMatchFormat] = useState<'kids' | 'adults' | 'custom'>('custom');
+  const [matchFormat, setMatchFormat] = useState<'kids' | 'adults' | 'custom'>('adults');
   const [customPeriodCount, setCustomPeriodCount] = useState(2);
   const [customPeriodDuration, setCustomPeriodDuration] = useState(45);
   const [isMatchFinished, setIsMatchFinished] = useState(false);
@@ -49,12 +49,19 @@ export default function App() {
     }
   }, [theme]);
 
+  // Robust timer using Date.now() for accuracy
   useEffect(() => {
     let interval: NodeJS.Timeout;
     if (isActive) {
+      const startTime = Date.now() - (seconds * 1000);
       interval = setInterval(() => {
-        setSeconds((prev) => prev + 1);
-      }, 1000);
+        const currentSeconds = Math.floor((Date.now() - startTime) / 1000);
+        // Only update if the second has actually changed to avoid unnecessary re-renders
+        setSeconds((prev) => {
+          if (prev !== currentSeconds) return currentSeconds;
+          return prev;
+        });
+      }, 200);
     }
     return () => clearInterval(interval);
   }, [isActive]);
@@ -285,6 +292,7 @@ const LiveScoreScreen = ({
               onClick={() => {
                 setEditMinutes(Math.floor(seconds / 60).toString());
                 setEditSeconds((seconds % 60).toString());
+                setIsActive(false); // Pause timer while editing
                 setIsEditingTime(true);
               }}
               className="p-1 text-text-dim hover:text-primary transition-colors"
@@ -605,13 +613,35 @@ const HomeScreen = ({
         {/* Match Format Selection */}
         <div className="flex flex-col gap-2">
           <label className="text-[10px] font-black text-text-dim uppercase tracking-[0.2em] ml-1">Format du Match</label>
-          <div className="grid grid-cols-1 gap-2">
+          <div className="grid grid-cols-3 gap-2">
+            <button 
+              onClick={() => {
+                setMatchFormat('adults');
+                setCustomPeriodCount(2);
+                setCustomPeriodDuration(45);
+              }}
+              className={`flex flex-col items-center p-3 rounded-2xl border transition-all ${matchFormat === 'adults' ? 'bg-primary/10 border-primary text-primary' : 'bg-surface-high border-text/5 text-text-muted'}`}
+            >
+              <span className="text-[9px] font-black uppercase tracking-widest leading-tight">Pro</span>
+              <span className="text-[10px] font-bold mt-1">2 x 45'</span>
+            </button>
+            <button 
+              onClick={() => {
+                setMatchFormat('kids');
+                setCustomPeriodCount(3);
+                setCustomPeriodDuration(15);
+              }}
+              className={`flex flex-col items-center p-3 rounded-2xl border transition-all ${matchFormat === 'kids' ? 'bg-primary/10 border-primary text-primary' : 'bg-surface-high border-text/5 text-text-muted'}`}
+            >
+              <span className="text-[9px] font-black uppercase tracking-widest leading-tight">Enfants</span>
+              <span className="text-[10px] font-bold mt-1">3 x 15'</span>
+            </button>
             <button 
               onClick={() => setMatchFormat('custom')}
               className={`flex flex-col items-center p-3 rounded-2xl border transition-all ${matchFormat === 'custom' ? 'bg-primary/10 border-primary text-primary' : 'bg-surface-high border-text/5 text-text-muted'}`}
             >
-              <span className="text-[9px] font-black uppercase tracking-widest">Personnalisé</span>
-              <span className="text-[12px] font-bold mt-1">Configuration Libre</span>
+              <span className="text-[9px] font-black uppercase tracking-widest leading-tight">Config</span>
+              <span className="text-[10px] font-bold mt-1">Libre</span>
             </button>
           </div>
         </div>
