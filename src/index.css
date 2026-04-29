@@ -23,10 +23,10 @@
 }
 
 .light {
-  --color-surface: #fafafa;
-  --color-surface-container: #f4f4f5;
-  --color-surface-high: #ffffff;
-  --color-surface-bright: #e4e4e7;
+  --color-surface: #f1f1f1;
+  --color-surface-container: #e5e5e5;
+  --color-surface-high: #f9f9f9;
+  --color-surface-bright: #d4d4d4;
   
   --color-primary: #0ea5e9;
   --color-primary-container: #0284c7;
@@ -37,8 +37,8 @@
   --color-error: #ef4444;
   
   --color-text: #09090b;
-  --color-text-muted: #71717a;
-  --color-text-dim: #d4d4d8;
+  --color-text-muted: #4b5563;
+  --color-text-dim: #9ca3af;
 }
 
 @layer base {
